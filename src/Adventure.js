@@ -12,6 +12,7 @@ import {
 import requireMapDirections from './requireMapDirections';
 import requireUserCurrentLocation from './requireUserCurrentLocation';
 import { MILES_THRESHOLD_WALKING, COLOR_PRIMARY, GRID_UNIT_PX } from './constants';
+import withGoogleMapsLibrary from './withGoogleMapsLibrary';
 
 const bootstrapURLKeys = {
   key: 'AIzaSyAZSu6vjcZb414zIVn1yMj6-tdGMPYjxCk', 
@@ -50,8 +51,6 @@ const Adventure = (props) => {
     {unit: 'miles'}
   );
 
-  // 47.6391322, lng: -122.3284845
-
   const destinationCoords = {
     lat: currentStep.end_location.lat(),
     lng: currentStep.end_location.lng(),
@@ -83,12 +82,11 @@ const Adventure = (props) => {
   return <>
     <Box paddingBottom={GRID_UNIT_PX}>
       <Flex>
-
         <div>
           <Heading size="md">
             Reach Checkpoint {currentStepIndex + 1}
           </Heading>
-          {currentStep.instructions.replace(/<[^>]*>/g, '')}
+          <Text>Location code name: {props.match.params.what3Id}</Text>
         </div>
       </Flex>
     </Box>
@@ -126,5 +124,5 @@ const WithMaps = requireMapDirections(Adventure);
 const WithRouter = withRouter(WithMaps);
 const WithLocation = requireUserCurrentLocation(WithRouter);
 
-export default WithLocation;
+export default withGoogleMapsLibrary(WithLocation);
 

@@ -4,6 +4,7 @@ import { Button } from "@chakra-ui/core";
 import { COLOR_PRIMARY } from './constants';
 import LocationSearchInput from './LocationSearchInput';
 import GameContext from './GameContext';
+import withGoogleMapsLibrary from './withGoogleMapsLibrary';
 
 function PickDestination() {
   const [ destinationCoords, setDestinationCoords ] = useState(null);
@@ -27,4 +28,4 @@ function PickDestination() {
   );
 }
 
-export default PickDestination;
+export default withGoogleMapsLibrary(PickDestination);

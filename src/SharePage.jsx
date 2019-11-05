@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { Flex, Box, Input, Text, Button, Progress, useToast, Heading } from "@chakra-ui/core";
+import {  Box, Input, Spinner, Heading } from "@chakra-ui/core";
 import { COLOR_PRIMARY, GRID_UNIT_PX } from './constants';
 
-const { protocol, hostname } = window.location;
-const pageURL = `${protocol}//${hostname}/index.html`;
+const { protocol, hostname, port } = window.location;
+const portString = (!!port && port !== 80) ? `:${port}` : '';
+const pageURL = `${protocol}//${hostname}${portString}/index.html`;
+
+const BASE_WHAT3_URL = 'https://api.what3words.com/v3/convert-to-3wa';
 
 const SharePage = ({
   match: {
@@ -13,23 +16,39 @@ const SharePage = ({
       dest_lon: lng
     }
   }
-}) => (
-  <>
-    <Box paddingBottom={GRID_UNIT_PX}>
-      <Heading size="md">
-        Share this link with your partner
-      </Heading>
-    </Box>
+}) => {
+  const [what3WordId, setWhat3WordId] = useState(null);
 
-    <Box paddingBottom={GRID_UNIT_PX}>
-      It will lead them on a scavenger hunt that ends at your chosen date location.
-    </Box>
+  useEffect(() => {
+    try {
+      window.fetch(`${BASE_WHAT3_URL}?coordinates=${lat},${lng}&language=en&key=M7ZS4GN5`)
+        .then(resp => resp.json())
+        .then(json => setWhat3WordId(json.words));
+      
+    } catch (error) {
+      throw new Error(`Problem converting lat/lng to What-3: ${JSON.stringify(error)}`);
+    }
+  }, []);
 
-    <Box paddingBottom={GRID_UNIT_PX}>
-      <Input size="lg" value={`${pageURL}#/adventure/${lat}/${lng}`} />
-    </Box>
-  </>
-);
+  return (
+    <>
+      <Box paddingBottom={GRID_UNIT_PX}>
+        <Heading size="md">
+          Share this link with your partner
+        </Heading>
+      </Box>
+
+      <Box paddingBottom={GRID_UNIT_PX}>
+        It will lead them on a scavenger hunt that ends at your chosen date location.
+      </Box>
+
+      <Box paddingBottom={GRID_UNIT_PX}>
+        {!!what3WordId && <Input size="lg" value={`${pageURL}#/adventure/${what3WordId}`} />}
+        {!what3WordId && <Spinner/> }
+      </Box>
+    </>
+  );
+};
 
 export default withRouter(SharePage);
 

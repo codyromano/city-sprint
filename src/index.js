@@ -15,7 +15,7 @@ const App = () => (
     <Router>
       <Switch>
         <Route path="/share/:dest_lat/:dest_lon" component={SharePage} exact />
-        <Route path="/adventure/:dest_lat/:dest_lon" component={Adventure} exact />
+        <Route path="/adventure/:what3Id" component={Adventure} exact />
         <Route path="/destination" component={PickDestination} exact />
         <Route path="/origin" component={ShareOrigin} exact />
         <Route path="/" component={Intro} />
