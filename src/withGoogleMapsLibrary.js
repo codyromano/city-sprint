@@ -6,12 +6,16 @@ export default function withGoogleMapsAPI(Component) {
   return (props) => {
     const [mapsLoaded, setMapsLoaded] = useState(false);
     useEffect(() => {
-      const script = document.createElement('script');
-      script.onload = () => {
-        setMapsLoaded(true);
-      };
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${credentials.googleMaps}&libraries=places`;
-      document.body.appendChild(script);
+      // Hack to include G-maps library exactly once
+      if (!document.getElementById('google-maps')) {
+        const script = document.createElement('script');
+        script.id = 'google-maps';
+        script.onload = () => {
+          setMapsLoaded(true);
+        };
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${credentials.googleMaps}&libraries=places`;
+        document.body.appendChild(script);
+      }
     }, [mapsLoaded]);
 
     const mapsLoadedGlobally = window.google && window.google.maps;

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import {  Box, Input, Spinner, Heading } from "@chakra-ui/core";
+import {  useToast, Box, Input, Spinner, Heading, Button, Grid } from "@chakra-ui/core";
 import { COLOR_PRIMARY, GRID_UNIT_PX } from './constants';
+import copyToClipboard from './utils/copyToClipboard';
 
 const { protocol, hostname, port } = window.location;
 const portString = (!!port && port !== 80) ? `:${port}` : '';
@@ -17,6 +18,7 @@ const SharePage = ({
     }
   }
 }) => {
+  const toast = useToast();
   const [what3WordId, setWhat3WordId] = useState(null);
 
   useEffect(() => {
@@ -29,6 +31,28 @@ const SharePage = ({
       throw new Error(`Problem converting lat/lng to What-3: ${JSON.stringify(error)}`);
     }
   }, []);
+
+  const copyShareLink = () => {
+    const link = document.getElementById('share-link');
+    const toastParams = {
+      title: "Text copied!",
+      description: "Now go ahead and share the link",
+      status: "success",
+      duration: 5000,
+      isClosable: true,
+    };
+
+    if (copyToClipboard(link)) {
+      toast(toastParams);
+    } else {
+      toast({
+        ...toastParams,
+        title: `Can't access your clipboard`,
+        status: 'error',
+        description: `But you can still copy/paste the link yourself.`
+      });
+    }
+  };
 
   return (
     <>
@@ -43,7 +67,10 @@ const SharePage = ({
       </Box>
 
       <Box paddingBottom={GRID_UNIT_PX}>
-        {!!what3WordId && <Input size="lg" value={`${pageURL}#/adventure/${what3WordId}`} />}
+        {!!what3WordId && <Grid>
+          <Input size="lg" id="share-link" value={`${pageURL}#/adventure/${what3WordId}`} />
+          <Button onClick={copyShareLink}>Copy</Button>
+        </Grid>}
         {!what3WordId && <Spinner/> }
       </Box>
     </>
