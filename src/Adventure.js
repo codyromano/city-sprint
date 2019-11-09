@@ -4,8 +4,6 @@ import GoogleMapReact from 'google-map-react';
 
 import haversine from 'haversine';
 import {
-  CircularProgress,
-  CircularProgressLabel,
   Stat,
   StatLabel,
   StatNumber, Flex, Box, Text, Button, Progress, useToast, Heading } from "@chakra-ui/core";
@@ -86,7 +84,6 @@ const Adventure = (props) => {
           <Heading size="md">
             Reach Checkpoint {currentStepIndex + 1}
           </Heading>
-          <Text>Location code name: {props.match.params.what3Id}</Text>
         </div>
       </Flex>
     </Box>

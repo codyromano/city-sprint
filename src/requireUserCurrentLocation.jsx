@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Spinner, Text, Stack, Button, Box } from "@chakra-ui/core";
-import { GRID_UNIT_PX, COLOR_PRIMARY } from './constants';
+import { Heading, Spinner, Text, Image, Stack, Button, Box } from "@chakra-ui/core";
+import { GRID_UNIT, COLOR_PRIMARY } from './constants';
 
 const requireUserCurrentLocation = (Component) => (props) => {
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -22,10 +22,26 @@ const requireUserCurrentLocation = (Component) => (props) => {
 
   if (!currentLocation) {
     return <>
-      <Box paddingBottom={GRID_UNIT_PX}>
-        <Text>This game uses your current location to create a fun adventure. I'll never share or give away your location info.</Text>
+    <Image src="/date.jpg" style={{maxHeight: '50vh'}} rounded="full" />
+
+      <Box paddingBottom={`${GRID_UNIT * 2}px`}>
+        <Heading size="md">Someone planned an adventure for you!</Heading>
       </Box>
-      <Button isLoading={userSharedLocation && !currentLocation} variantColor={COLOR_PRIMARY} onClick={() => setUserSharedLocation(true)}>Share location</Button>
+      <Box paddingBottom={`${GRID_UNIT * 2}px`}>
+        <Text>
+          Your friend picked out a fun bar, restaurant or similar venue just for you. This website will lead you there through a series of video game-like checkpoints.
+        </Text>
+      </Box>
+
+      <Box paddingBottom={`${GRID_UNIT * 2}px`}>
+      <Text fontSize="sm" color="gray.500">
+        <strong>Privacy</strong> We only use your location to create checkpoints. We won't save or share your information.
+      </Text>
+      </Box>
+
+      <Box paddingBottom={`${GRID_UNIT * 2}px`}>
+        <Button isLoading={userSharedLocation && !currentLocation} variantColor={COLOR_PRIMARY} onClick={() => setUserSharedLocation(true)}>Start navigating</Button>
+      </Box>
     </>;
   }
 
