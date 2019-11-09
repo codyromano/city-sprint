@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import {  useToast, Box, Input, Spinner, Heading, Button, Grid } from "@chakra-ui/core";
 import { COLOR_PRIMARY, GRID_UNIT_PX } from './constants';
-import copyToClipboard from './utils/copyToClipboard';
+import copy from 'copy-to-clipboard';
 
 const { protocol, hostname, port } = window.location;
 const portString = (!!port && port !== 80) ? `:${port}` : '';
@@ -42,7 +42,7 @@ const SharePage = ({
       isClosable: true,
     };
 
-    if (copyToClipboard(link)) {
+    if (copy(link.value)) {
       toast(toastParams);
     } else {
       toast({
