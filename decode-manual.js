@@ -1,13 +1,4 @@
-/**
- * Encodes geographic coordinates into three English words
- * and decodes them back to coordinates.
- * 
- * Format: encodes latitude and longitude with precision to ~11 meters
- * using a word list for human-friendly representation.
- */
-
-// Word list of 2048 common English words (2^11)
-// This gives us enough combinations for precise geolocation
+// Manual decode of "garbage-minute-current"
 const WORD_LIST = [
   "able", "about", "above", "accept", "across", "act", "action", "add", "afraid", "after",
   "again", "against", "age", "ago", "agree", "air", "all", "allow", "almost", "alone",
@@ -269,93 +260,22 @@ const WORD_LIST = [
   "yacht", "yield", "young", "youth", "zebra", "zero", "zone", "zoo"
 ];
 
-const WORD_COUNT = WORD_LIST.length;
+const words = ['garbage', 'minute', 'current'];
+const indices = words.map(word => WORD_LIST.indexOf(word));
 
-/**
- * Converts latitude/longitude to three English words
- * 
- * @param {number} lat - Latitude (-90 to 90)
- * @param {number} lng - Longitude (-180 to 180)
- * @returns {string} - Three words separated by hyphens (e.g., "able-music-planet")
- */
-export function coordinatesToCode(lat, lng) {
-  // Normalize coordinates to positive integers
-  // Use 250x multiplier for ~400m precision to safely fit in 33 bits
-  // Lat: -90 to 90 -> 0 to 45,000 (needs 16 bits, max 65,536)
-  // Lng: -180 to 180 -> 0 to 90,000 (needs 17 bits, max 131,072)
-  // Total: 33 bits, fits perfectly in 3 words of 11 bits each
-  
-  const latNormalized = Math.round((lat + 90) * 250);  // 0 to 45,000
-  const lngNormalized = Math.round((lng + 180) * 250); // 0 to 90,000
-  
-  // Pack into 3 x 11-bit words (33 bits total)
-  // Word 1: lat bits 0-10 (11 bits)
-  // Word 2: lat bits 11-15 (5 bits) + lng bits 0-5 (6 bits)
-  // Word 3: lng bits 6-16 (11 bits)
-  
-  const word1Index = latNormalized & 0x7FF;  // Lower 11 bits of lat
-  const word2Index = ((latNormalized >> 11) & 0x1F) | ((lngNormalized & 0x3F) << 5);
-  const word3Index = (lngNormalized >> 6) & 0x7FF;  // Bits 6-16 of lng
-  
-  return `${WORD_LIST[word1Index]}-${WORD_LIST[word2Index]}-${WORD_LIST[word3Index]}`;
-}
+console.log('Words:', words);
+console.log('Indices:', indices);
 
-/**
- * Converts three words back to latitude/longitude coordinates
- * 
- * @param {string} code - Three words (e.g., "able-music-planet" or "able music planet")
- * @returns {object} - Object with lat and lng properties, or null if invalid
- */
-export function codeToCoordinates(code) {
-  try {
-    // Split by hyphen or space
-    const words = code.toLowerCase().split(/[-\s]+/);
-    
-    if (words.length !== 3) {
-      console.error('Invalid code: must contain exactly three words');
-      return null;
-    }
-    
-    // Find indices of each word
-    const indices = words.map(word => {
-      const index = WORD_LIST.indexOf(word);
-      if (index === -1) {
-        throw new Error(`Unknown word: ${word}`);
-      }
-      return index;
-    });
-    
-    // Unpack the bits
-    const word1Index = indices[0];
-    const word2Index = indices[1];
-    const word3Index = indices[2];
-    
-    const latNormalized = (word1Index & 0x7FF) | ((word2Index & 0x1F) << 11);
-    const lngNormalized = ((word2Index >> 5) & 0x3F) | ((word3Index & 0x7FF) << 6);
-    
-    // Convert back to coordinates
-    const lat = (latNormalized / 250) - 90;
-    const lng = (lngNormalized / 250) - 180;
-    
-    // Validate ranges
-    if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
-      console.error('Decoded coordinates out of valid range', { lat, lng });
-      return null;
-    }
-    
-    return { lat, lng };
-  } catch (error) {
-    console.error('Error decoding word code:', error);
-    return null;
-  }
-}
+const word1Index = indices[0];
+const word2Index = indices[1];
+const word3Index = indices[2];
 
-/**
- * Formats a geocode for display (already formatted with hyphens)
- * 
- * @param {string} code - The raw geocode
- * @returns {string} - Formatted code
- */
-export function formatCode(code) {
-  return code;
-}
+const latNormalized = (word1Index & 0x7FF) | ((word2Index & 0x1F) << 11);
+const lngNormalized = ((word2Index >> 5) & 0x3F) | ((word3Index & 0x7FF) << 6);
+
+const lat = (latNormalized / 250) - 90;
+const lng = (lngNormalized / 250) - 180;
+
+console.log('\nDecoded coordinates:');
+console.log('Latitude:', lat);
+console.log('Longitude:', lng);
