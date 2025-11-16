@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Spinner, Text, Button, Box } from "@chakra-ui/core";
+import { Spinner, Text, Box } from "@chakra-ui/core";
 import credentials from './credentials.json';
 
 export default function withGoogleMapsAPI(Component) {

@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import {  useToast, Box, Input, Spinner, Heading, Button, Grid } from "@chakra-ui/core";
-import { COLOR_PRIMARY, GRID_UNIT_PX } from './constants';
+import { GRID_UNIT_PX } from './constants';
 import copy from 'copy-to-clipboard';
+import { coordinatesToCode } from './geoCodec';
 
 const { protocol, hostname, port } = window.location;
 const portString = (!!port && port !== 80) ? `:${port}` : '';
 const pageURL = `${protocol}//${hostname}${portString}/index.html`;
-
-const BASE_WHAT3_URL = 'https://api.what3words.com/v3/convert-to-3wa';
 
 const SharePage = ({
   match: {
@@ -19,18 +18,16 @@ const SharePage = ({
   }
 }) => {
   const toast = useToast();
-  const [what3WordId, setWhat3WordId] = useState(null);
+  const [geoCode, setGeoCode] = useState(null);
 
   useEffect(() => {
     try {
-      window.fetch(`${BASE_WHAT3_URL}?coordinates=${lat},${lng}&language=en&key=M7ZS4GN5`)
-        .then(resp => resp.json())
-        .then(json => setWhat3WordId(json.words));
-      
+      const code = coordinatesToCode(parseFloat(lat), parseFloat(lng));
+      setGeoCode(code);
     } catch (error) {
-      throw new Error(`Problem converting lat/lng to What-3: ${JSON.stringify(error)}`);
+      throw new Error(`Problem converting lat/lng to geocode: ${JSON.stringify(error)}`);
     }
-  }, []);
+  }, [lat, lng]);
 
   const copyShareLink = () => {
     const link = document.getElementById('share-link');
@@ -67,11 +64,11 @@ const SharePage = ({
       </Box>
 
       <Box paddingBottom={GRID_UNIT_PX}>
-        {!!what3WordId && <Grid>
-          <Input size="lg" id="share-link" value={`${pageURL}#/adventure/${what3WordId}`} />
+        {!!geoCode && <Grid>
+          <Input size="lg" id="share-link" value={`${pageURL}#/adventure/${geoCode}`} />
           <Button onClick={copyShareLink}>Copy</Button>
         </Grid>}
-        {!what3WordId && <Spinner/> }
+        {!geoCode && <Spinner/> }
       </Box>
     </>
   );

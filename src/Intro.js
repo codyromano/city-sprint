@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Text, Grid, Button, Box, Stack, Heading, Image } from "@chakra-ui/core";
+import { Text, Button, Box, Heading, Image } from "@chakra-ui/core";
 import { Link } from 'react-router-dom';
 import { GRID_UNIT, GRID_UNIT_PX, COLOR_PRIMARY } from './constants';
 

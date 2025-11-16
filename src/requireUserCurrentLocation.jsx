@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Heading, Spinner, Text, Image, Stack, Button, Box } from "@chakra-ui/core";
+import { Heading, Text, Image, Button, Box } from "@chakra-ui/core";
 import { GRID_UNIT, COLOR_PRIMARY } from './constants';
 
 const requireUserCurrentLocation = (Component) => (props) => {

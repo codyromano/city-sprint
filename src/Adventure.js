@@ -6,7 +6,7 @@ import haversine from 'haversine';
 import {
   Stat,
   StatLabel,
-  StatNumber, Flex, Box, Text, Button, Progress, useToast, Heading } from "@chakra-ui/core";
+  StatNumber, Flex, Box, Text, Button, useToast, Heading } from "@chakra-ui/core";
 import requireMapDirections from './requireMapDirections';
 import requireUserCurrentLocation from './requireUserCurrentLocation';
 import { MILES_THRESHOLD_WALKING, COLOR_PRIMARY, GRID_UNIT_PX } from './constants';
@@ -31,7 +31,7 @@ const destinationPinStyles = {
 };
 
 const CurrentLocationPin = () => <div style={currentLocationPinStyles}/>;
-const DestinationPin = () => <img src="/flag.png" style={destinationPinStyles} />;
+const DestinationPin = () => <img src="/flag.png" alt="Destination flag" style={destinationPinStyles} />;
 
 const Adventure = (props) => {
   const [ currentStepIndex, setCurrentStepIndex ] = useState(0);

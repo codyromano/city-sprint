@@ -1,5 +1,5 @@
-import React, { useState, useContext, useEffect } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Box, Text, Button, Stack, Heading , Spinner} from "@chakra-ui/core";
 import { GRID_UNIT_PX, COLOR_PRIMARY } from './constants';
 import GameContext from './GameContext';

@@ -1,10 +1,7 @@
 import React, { useState, useEffect} from 'react';
-import { Redirect, withRouter} from 'react-router-dom';
 import idx from 'idx';
-import { Spinner, Text, Button, Box } from "@chakra-ui/core";
-import credentials from "../src/credentials.json";
-
-let loadedGoogleMaps = false;
+import { Spinner, Text } from "@chakra-ui/core";
+import { codeToCoordinates } from './geoCodec';
 
 const requireMapDirections = (Component) => (props) => {  
   const { currentLocation, match: { params: { what3Id }} } = props;
@@ -13,18 +10,17 @@ const requireMapDirections = (Component) => (props) => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
-    const endpoint = `https://api.what3words.com/v3/convert-to-coordinates?words=${what3Id}&key=${credentials.what3}`;
-
     try {
-      window.fetch(endpoint)
-        .then(resp => resp.json())
-        .then(json => {
-          setCoords(json.coordinates);
-        });
-      } catch (error) {
-        console.log(error);
-        setErrorMessage('There was a problem converting the three-word location into map coordinates');
+      const decodedCoords = codeToCoordinates(what3Id);
+      if (decodedCoords) {
+        setCoords(decodedCoords);
+      } else {
+        setErrorMessage('Invalid location code');
       }
+    } catch (error) {
+      console.log(error);
+      setErrorMessage('There was a problem converting the location code into map coordinates');
+    }
   }, [what3Id]);
 
 
@@ -48,7 +44,7 @@ const requireMapDirections = (Component) => (props) => {
         setMapDirections(steps);
       }
     });
-  }, [coords]);
+  }, [coords, currentLocation.lat, currentLocation.lng]);
 
   if (errorMessage) {
     return <Text>{errorMessage}</Text>;

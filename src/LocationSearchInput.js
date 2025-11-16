@@ -1,5 +1,5 @@
 import React from "react";
-import { Input, Flex, Button, Box, Text, Spinner, FormControl, FormLabel } from "@chakra-ui/core";
+import { Input, Box, Text, Spinner, FormControl, FormLabel } from "@chakra-ui/core";
 import { GRID_UNIT } from './constants';
 import PlacesAutocomplete, {
   geocodeByAddress,
